@@ -13,6 +13,7 @@ import (
 )
 
 const (
+	// API error codes.
 	notPositivePaymentAmountErrCode = "NOT_POSITIVE_PAYMENT_AMOUNT"
 	lowBalanceErrCode               = "LOW_BALANCE"
 	paymentToSameAccountErrCode     = "PAYMENT_TO_SAME_ACCOUNT"

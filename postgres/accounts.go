@@ -11,7 +11,7 @@ type AccountsRepository struct {
 	db *pg.DB
 }
 
-func NewAccountsRepositry(settings *config.Postgres) (*AccountsRepository, error) {
+func NewAccountsRepository(settings *config.Postgres) (*AccountsRepository, error) {
 	db, err := connect(settings)
 	if err != nil {
 		return nil, err

@@ -8,7 +8,9 @@ import (
 	"github.com/pkg/errors"
 )
 
-const defaultLimit = 50
+const (
+	defaultPaginationLimit = 50
+)
 
 type Service interface {
 	SendPayment(ctx context.Context, fromAccountId, toAccountId string, amount float64) error
@@ -19,6 +21,10 @@ type Service interface {
 type service struct {
 	payments payment.Repository
 	accounts account.Repository
+}
+
+func NewService(payments payment.Repository, accounts account.Repository) *service {
+	return &service{payments: payments, accounts: accounts}
 }
 
 func (s *service) SendPayment(ctx context.Context, fromAccountId, toAccountId string, amount float64) error {
@@ -54,7 +60,7 @@ func (s *service) SendPayment(ctx context.Context, fromAccountId, toAccountId st
 
 func (s *service) GetAllPayments(ctx context.Context, offset, limit int) ([]*payment.Payment, int, error) {
 	if limit == 0 {
-		limit = 50
+		limit = defaultPaginationLimit
 	}
 	paymentRecords, err := s.payments.GetAll(ctx, offset, limit)
 	if err != nil {
@@ -69,7 +75,7 @@ func (s *service) GetAllPayments(ctx context.Context, offset, limit int) ([]*pay
 
 func (s *service) GetAllAccounts(ctx context.Context, offset, limit int) ([]*account.Account, int, error) {
 	if limit == 0 {
-		limit = 50
+		limit = defaultPaginationLimit
 	}
 	accountRecords, err := s.accounts.GetAll(ctx, offset, limit)
 	if err != nil {

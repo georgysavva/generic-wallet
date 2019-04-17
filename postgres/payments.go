@@ -12,7 +12,7 @@ type PaymentsRepository struct {
 	db *pg.DB
 }
 
-func NewPaymentsRepositry(settings *config.Postgres) (*PaymentsRepository, error) {
+func NewPaymentsRepository(settings *config.Postgres) (*PaymentsRepository, error) {
 	db, err := connect(settings)
 	if err != nil {
 		return nil, err
@@ -24,7 +24,8 @@ func (pr *PaymentsRepository) GetAll(ctx context.Context, offset, limit int) ([]
 	var records []*payment.Payment
 	_, err := pr.db.QueryContext(ctx,
 		&records,
-		"select account_id,to_account_id,from_account_id,amount,direction from payment offset ?0 limit ?1",
+		"select account_id,to_account_id,from_account_id,amount,direction "+
+			"from payments order by account_id offset ?0 limit ?1",
 		offset, limit,
 	)
 	return records, err
@@ -32,19 +33,19 @@ func (pr *PaymentsRepository) GetAll(ctx context.Context, offset, limit int) ([]
 
 func (pr *PaymentsRepository) CountAll(ctx context.Context) (int, error) {
 	var count int
-	_, err := pr.db.QueryOneContext(ctx, pg.Scan(&count), "select count(*) from accounts")
+	_, err := pr.db.QueryOneContext(ctx, pg.Scan(&count), "select count(*) from payments")
 	if err != nil {
 		return 0, err
 	}
 	return count, nil
 }
 
-func (pr *PaymentsRepository) Save(ctx context.Context, paymentReq payment.PaymentRequest) error {
+func (pr *PaymentsRepository) Save(ctx context.Context, paymentReq *payment.PaymentRequest) error {
 	err := pr.db.RunInTransaction(func(tx *pg.Tx) error {
 		var fromAccountBalance float64
 		_, err := tx.QueryOneContext(ctx,
 			pg.Scan(&fromAccountBalance),
-			"select amount from accounts where id=?0 for update",
+			"select balance from accounts where id=?0 for update",
 			paymentReq.FromAccountId,
 		)
 		if err != nil {

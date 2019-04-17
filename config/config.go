@@ -6,18 +6,21 @@ import (
 )
 
 type Postgres struct {
-	Host       string `yaml:"host" json:"host"`
-	Port       int    `yaml:"port" json:"port"`
-	User       string `yaml:"user" json:"user"`
-	Database   string `yaml:"database" json:"database"`
-	Password   string `yaml:"password" json:"password"`
-	Timeout    int    `yaml:"timeout" json:"timeout"`
-	RetriesNum int    `yaml:"retries_num" json:"retries_num"`
+	Host     string `yaml:"host" json:"host"`
+	Port     int    `yaml:"port" json:"port"`
+	User     string `yaml:"user" json:"user"`
+	Database string `yaml:"database" json:"database"`
+	Password string `yaml:"password" json:"password"`
+	// In milliseconds
+	Timeout    int `yaml:"timeout" json:"timeout"`
+	RetriesNum int `yaml:"retries_num" json:"retries_num"`
 }
 
 type Config struct {
-	Port     int       `yaml:"port" json:"port"`
-	Postgres *Postgres `yaml:"postgres" json:"postgres"`
+	Port int `yaml:"port" json:"port"`
+	// In milliseconds
+	ShutDownTimeout int       `yaml:"shutdown_timeout" json:"shutdown_timeout"`
+	Postgres        *Postgres `yaml:"postgres" json:"postgres"`
 }
 
 func Parse(filePath string) (*Config, error) {

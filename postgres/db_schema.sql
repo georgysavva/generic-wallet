@@ -7,12 +7,12 @@ CREATE TABLE public.accounts
 
 CREATE TABLE public.payments
 (
-    account text NOT NULL,
-    to_account text,
-    from_account text,
+    account_id text NOT NULL,
+    to_account_id text,
+    from_account_id text,
     amount float NOT NULL,
     direction text NOT NULL,
-    CONSTRAINT payments_accounts_id_fk FOREIGN KEY (account) REFERENCES public.accounts (id) ON DELETE CASCADE,
-    CONSTRAINT payments_accounts_id_fk_2 FOREIGN KEY (to_account) REFERENCES public.accounts (id) ON DELETE CASCADE,
-    CONSTRAINT payments_accounts_id_fk_3 FOREIGN KEY (from_account) REFERENCES public.accounts (id) ON DELETE CASCADE
+    CONSTRAINT payments_accounts_id_fk FOREIGN KEY (account_id) REFERENCES public.accounts (id) ON DELETE CASCADE,
+    CONSTRAINT payments_accounts_id_fk_2 FOREIGN KEY (to_account_id) REFERENCES public.accounts (id) ON DELETE CASCADE,
+    CONSTRAINT payments_accounts_id_fk_3 FOREIGN KEY (from_account_id) REFERENCES public.accounts (id) ON DELETE CASCADE
 );
