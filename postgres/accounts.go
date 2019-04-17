@@ -43,6 +43,9 @@ func (ar *AccountsRepository) Get(ctx context.Context, accountId string) (*accou
 		record, "select id,balance,currency from accounts where id=?0", accountId,
 	)
 	if err != nil {
+		if err == pg.ErrNoRows {
+			return nil, nil
+		}
 		return nil, err
 	}
 	return record, nil

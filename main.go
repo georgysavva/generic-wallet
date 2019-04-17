@@ -59,7 +59,7 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), time.Millisecond*time.Duration(conf.ShutDownTimeout))
 	defer cancel()
 	if err := server.Shutdown(ctx); err != nil {
-		panic(err)
+		logger.Log("msg", "Graceful shutdown failed", "err", err)
 	}
 }
 

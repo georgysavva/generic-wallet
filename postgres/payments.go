@@ -4,7 +4,6 @@ import (
 	"coins_wallet/config"
 	"coins_wallet/payment"
 	"context"
-
 	"github.com/go-pg/pg"
 )
 
@@ -57,7 +56,7 @@ func (pr *PaymentsRepository) Save(ctx context.Context, paymentReq *payment.Paym
 
 		// Create an outgoing payment.
 		_, err = tx.ExecOneContext(ctx,
-			"insert into payments (account,to_account,amount,direction) values (?0,?1,?2,?3)",
+			"insert into payments (account_id,to_account_id,amount,direction) values (?0,?1,?2,?3)",
 			paymentReq.FromAccountId, paymentReq.ToAccountId, paymentReq.Amount, payment.OutgoingDirection,
 		)
 		if err != nil {
@@ -66,7 +65,7 @@ func (pr *PaymentsRepository) Save(ctx context.Context, paymentReq *payment.Paym
 
 		// Create an incoming payment.
 		_, err = tx.ExecOneContext(ctx,
-			"insert into payments (account,from_account,amount,direction) values (?0,?1,?2,?3)",
+			"insert into payments (account_id,from_account_id,amount,direction) values (?0,?1,?2,?3)",
 			paymentReq.ToAccountId, paymentReq.FromAccountId, paymentReq.Amount, payment.IncomingDirection,
 		)
 		if err != nil {

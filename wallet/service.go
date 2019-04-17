@@ -5,6 +5,7 @@ import (
 	"coins_wallet/payment"
 	"context"
 	"fmt"
+
 	"github.com/pkg/errors"
 )
 
