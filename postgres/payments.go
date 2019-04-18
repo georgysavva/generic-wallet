@@ -24,7 +24,7 @@ func (pr *PaymentsRepository) GetAll(ctx context.Context, offset, limit int) ([]
 	_, err := pr.db.QueryContext(ctx,
 		&records,
 		"select account_id,to_account_id,from_account_id,amount,direction "+
-			"from payments order by account_id offset ?0 limit ?1",
+			"from payments order by id offset ?0 limit ?1",
 		offset, limit,
 	)
 	return records, err

@@ -49,6 +49,9 @@ func makeGetAllPaymentsEndpoint(s Service) endpoint.Endpoint {
 		if err != nil {
 			return nil, err
 		}
+		if payments == nil {
+			payments = []*payment.Payment{}
+		}
 		return &getAllPaymentsResponse{Results: payments, Total: totalNumber}, nil
 	}
 }
@@ -68,6 +71,9 @@ func makeGetAllAccountsEndpoint(s Service) endpoint.Endpoint {
 		accounts, totalNumber, err := s.GetAllAccounts(ctx, req.Offset, req.Limit)
 		if err != nil {
 			return nil, err
+		}
+		if accounts == nil {
+			accounts = []*account.Account{}
 		}
 		return &getAllAccountsResponse{Results: accounts, Total: totalNumber}, nil
 	}

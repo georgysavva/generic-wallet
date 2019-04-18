@@ -5,7 +5,6 @@ import (
 	"coins_wallet/payment"
 	"context"
 	"fmt"
-
 	"github.com/pkg/errors"
 )
 
@@ -32,10 +31,10 @@ func (s *service) SendPayment(ctx context.Context, fromAccountId, toAccountId st
 	// Assumption: Account can't be deleted.
 	// Assumption: Account currency can't be changed.
 	if fromAccountId == toAccountId {
-		return PaymentToSameAccountErr
+		return &IncorrectInputData{"source account and destination account are the same"}
 	}
 	if amount <= 0 {
-		return NotPositivePaymentAmount
+		return &IncorrectInputData{"payment amount must be greater than 0"}
 	}
 	fromAccount, err := s.accounts.Get(ctx, fromAccountId)
 	if err != nil {
@@ -60,8 +59,9 @@ func (s *service) SendPayment(ctx context.Context, fromAccountId, toAccountId st
 }
 
 func (s *service) GetAllPayments(ctx context.Context, offset, limit int) ([]*payment.Payment, int, error) {
-	if limit == 0 {
-		limit = defaultPaginationLimit
+	offset, limit, err := preparePagination(offset, limit)
+	if err != nil {
+		return nil, 0, err
 	}
 	paymentRecords, err := s.payments.GetAll(ctx, offset, limit)
 	if err != nil {
@@ -75,8 +75,9 @@ func (s *service) GetAllPayments(ctx context.Context, offset, limit int) ([]*pay
 }
 
 func (s *service) GetAllAccounts(ctx context.Context, offset, limit int) ([]*account.Account, int, error) {
-	if limit == 0 {
-		limit = defaultPaginationLimit
+	offset, limit, err := preparePagination(offset, limit)
+	if err != nil {
+		return nil, 0, err
 	}
 	accountRecords, err := s.accounts.GetAll(ctx, offset, limit)
 	if err != nil {
@@ -88,13 +89,26 @@ func (s *service) GetAllAccounts(ctx context.Context, offset, limit int) ([]*acc
 	}
 	return accountRecords, accountsTotal, nil
 }
+func preparePagination(offset, limit int) (int, int, error) {
+	if offset < 0 || limit < 0 {
+		return 0, 0, &IncorrectInputData{"'offset' and 'limit' pagination parameters must be >= 0"}
+	}
+	if limit == 0 {
+		limit = defaultPaginationLimit
+	}
+	return offset, limit, nil
+}
 
-//var LowBalanceErr = errors.New("source account doesn't have enough money")
 var FromAccountNotFound = errors.New("source account not found")
 var ToAccountNotFound = errors.New("destination account not found")
 
-var PaymentToSameAccountErr = errors.New("source account and destination account are the same")
-var NotPositivePaymentAmount = errors.New("payment amount must be greater than 0")
+type IncorrectInputData struct {
+	Details string
+}
+
+func (e *IncorrectInputData) Error() string {
+	return e.Details
+}
 
 type DifferentCurrenciesError struct {
 	FromAccountCurrency string

@@ -7,6 +7,7 @@ CREATE TABLE public.accounts
 
 CREATE TABLE public.payments
 (
+    id serial PRIMARY KEY NOT NULL,
     account_id text NOT NULL,
     to_account_id text,
     from_account_id text,

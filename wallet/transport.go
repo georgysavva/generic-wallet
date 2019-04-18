@@ -14,14 +14,12 @@ import (
 
 const (
 	// API error codes.
-	notPositivePaymentAmountErrCode = "NOT_POSITIVE_PAYMENT_AMOUNT"
-	lowBalanceErrCode               = "LOW_BALANCE"
-	paymentToSameAccountErrCode     = "PAYMENT_TO_SAME_ACCOUNT"
-	fromAccountNotFoundErrCode      = "FROM_ACCOUNT_NOT_FOUND"
-	toAccountNotFoundErrCode        = "TO_ACCOUNT_NOT_FOUND"
-	differentCurrenciesErrCode      = "DIFFERENT_CURRENCIES"
-	incorrectRequestErrCode         = "INCORRECT_REQUEST"
-	internalErrorErrCode            = "INTERNAL_ERROR"
+	lowBalanceErrCode          = "LOW_BALANCE"
+	fromAccountNotFoundErrCode = "FROM_ACCOUNT_NOT_FOUND"
+	toAccountNotFoundErrCode   = "TO_ACCOUNT_NOT_FOUND"
+	differentCurrenciesErrCode = "DIFFERENT_CURRENCIES"
+	incorrectRequestErrCode    = "INCORRECT_REQUEST"
+	internalErrorErrCode       = "INTERNAL_ERROR"
 )
 
 func MakeHandler(s Service, logger kitlog.Logger) http.Handler {
@@ -137,16 +135,15 @@ func encodeError(_ context.Context, err error, w http.ResponseWriter) {
 	switch err.(type) {
 	case *decodingError:
 		errorCode, httpStatusCode = incorrectRequestErrCode, http.StatusBadRequest
+	case *IncorrectInputData:
+		errorCode, httpStatusCode = incorrectRequestErrCode, http.StatusBadRequest
 	case *DifferentCurrenciesError:
 		errorCode, httpStatusCode = differentCurrenciesErrCode, http.StatusConflict
+
 	default:
 		switch err {
-		case PaymentToSameAccountErr:
-			errorCode, httpStatusCode = paymentToSameAccountErrCode, http.StatusBadRequest
 		case payment.LowBalanceErr:
 			errorCode, httpStatusCode = lowBalanceErrCode, http.StatusBadRequest
-		case NotPositivePaymentAmount:
-			errorCode, httpStatusCode = notPositivePaymentAmountErrCode, http.StatusBadRequest
 		case FromAccountNotFound:
 			errorCode, httpStatusCode = fromAccountNotFoundErrCode, http.StatusNotFound
 		case ToAccountNotFound:
