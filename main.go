@@ -19,7 +19,7 @@ import (
 func main() {
 
 	var configPath string
-	flag.StringVar(&configPath, "config", "default_config.json", "Path to the configuration file")
+	flag.StringVar(&configPath, "config", "config.json", "Path to the configuration file")
 	flag.Parse()
 
 	conf, err := config.Parse(configPath)

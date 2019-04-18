@@ -1,0 +1,13 @@
+{
+  "port": 8080,
+  "shutdown_timeout": 3000,
+  "postgres": {
+    "host": "localhost",
+    "port": 5432,
+    "user": "postgres-user",
+    "database": "postgres",
+    "password": "postgres-password",
+    "timeout": 3000,
+    "retries_num": 3
+  }
+}
