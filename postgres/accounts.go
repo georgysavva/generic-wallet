@@ -1,9 +1,9 @@
 package postgres
 
 import (
-	"coins_wallet/account"
-	"coins_wallet/config"
 	"context"
+	"generic_wallet/account"
+	"generic_wallet/config"
 	"github.com/go-pg/pg"
 )
 

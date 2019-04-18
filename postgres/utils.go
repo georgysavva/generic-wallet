@@ -1,7 +1,7 @@
 package postgres
 
 import (
-	"coins_wallet/config"
+	"generic_wallet/config"
 	"github.com/go-pg/pg"
 	"github.com/pkg/errors"
 	"net"

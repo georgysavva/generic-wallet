@@ -1,10 +1,10 @@
 package wallet
 
 import (
-	"coins_wallet/account"
-	"coins_wallet/inmem_repository"
-	"coins_wallet/payment"
 	"context"
+	"generic_wallet/account"
+	"generic_wallet/inmem_repository"
+	"generic_wallet/payment"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )

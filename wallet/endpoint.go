@@ -1,9 +1,9 @@
 package wallet
 
 import (
-	"coins_wallet/account"
-	"coins_wallet/payment"
 	"context"
+	"generic_wallet/account"
+	"generic_wallet/payment"
 	"github.com/go-kit/kit/endpoint"
 )
 

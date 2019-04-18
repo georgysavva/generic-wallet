@@ -1,12 +1,12 @@
 package main
 
 import (
-	"coins_wallet/config"
-	"coins_wallet/postgres"
-	"coins_wallet/wallet"
 	"context"
 	"flag"
 	"fmt"
+	"generic_wallet/config"
+	"generic_wallet/postgres"
+	"generic_wallet/wallet"
 	"net/http"
 	"os"
 	"os/signal"

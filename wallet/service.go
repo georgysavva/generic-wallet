@@ -1,10 +1,10 @@
 package wallet
 
 import (
-	"coins_wallet/account"
-	"coins_wallet/payment"
 	"context"
 	"fmt"
+	"generic_wallet/account"
+	"generic_wallet/payment"
 	"github.com/pkg/errors"
 )
 

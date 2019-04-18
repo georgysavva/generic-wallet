@@ -1,9 +1,9 @@
 package wallet
 
 import (
-	"coins_wallet/payment"
 	"context"
 	"encoding/json"
+	"generic_wallet/payment"
 	kitlog "github.com/go-kit/kit/log"
 	kithttp "github.com/go-kit/kit/transport/http"
 	"github.com/gorilla/mux"
@@ -115,7 +115,7 @@ func decodeGetAllAccountsRequest(_ context.Context, r *http.Request) (interface{
 	return &getAllAccountsRequest{paginationRequest: decoded}, nil
 }
 
-func encodeResponse(ctx context.Context, w http.ResponseWriter, response interface{}) error {
+func encodeResponse(_ context.Context, w http.ResponseWriter, response interface{}) error {
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	var httpStatusCode int
 	switch response.(type) {
