@@ -24,7 +24,7 @@ type AccountsRepository struct {
 	accounts map[string]*account.Account
 }
 
-func (ar *AccountsRepository) GetAll(ctx context.Context, offset, limit int) ([]*account.Account, error) {
+func (ar *AccountsRepository) GetAll(ctx context.Context, offset, limit *int) ([]*account.Account, error) {
 	var accountsList []*account.Account
 	for _, accountRecord := range ar.accounts {
 		accountsList = append(accountsList, accountRecord)
@@ -32,15 +32,7 @@ func (ar *AccountsRepository) GetAll(ctx context.Context, offset, limit int) ([]
 	sort.Slice(accountsList, func(i, j int) bool {
 		return accountsList[i].Id < accountsList[j].Id
 	})
-	start := offset
-	if start > len(ar.accounts) {
-		start = len(ar.accounts)
-	}
-	end := offset + limit
-	if end > len(ar.accounts) {
-		end = len(ar.accounts)
-	}
-	return accountsList[start:end], nil
+	return accountsList, nil
 }
 
 func (ar *AccountsRepository) CountAll(ctx context.Context) (int, error) {
@@ -57,47 +49,39 @@ type PaymentsRepository struct {
 	accountsRepo *AccountsRepository
 }
 
-func (pr *PaymentsRepository) GetAll(ctx context.Context, offset, limit int) ([]*payment.Payment, error) {
-	start := offset
-	if start > len(pr.payments) {
-		start = len(pr.payments)
-	}
-	end := offset + limit
-	if end > len(pr.payments) {
-		end = len(pr.payments)
-	}
-	return pr.payments[start:end], nil
+func (pr *PaymentsRepository) GetAll(ctx context.Context, offset, limit *int) ([]*payment.Payment, error) {
+	return pr.payments, nil
 }
 
 func (pr *PaymentsRepository) CountAll(ctx context.Context) (int, error) {
 	return len(pr.payments), nil
 }
 
-func (pr *PaymentsRepository) Save(ctx context.Context, paymentReq *payment.PaymentRequest) error {
-	fromAccount := pr.accountsRepo.accounts[paymentReq.FromAccountId]
+func (pr *PaymentsRepository) Save(ctx context.Context, fromAccountId, toAccountId string, amount float64) error {
+	fromAccount := pr.accountsRepo.accounts[fromAccountId]
 	if fromAccount == nil {
 		return errors.New("source account not found")
 	}
-	toAccount := pr.accountsRepo.accounts[paymentReq.ToAccountId]
+	toAccount := pr.accountsRepo.accounts[toAccountId]
 	if toAccount == nil {
 		return errors.New("destination account not found")
 	}
-	if fromAccount.Balance-paymentReq.Amount < 0 {
+	if fromAccount.Balance-amount < 0 {
 		return payment.LowBalanceErr
 	}
 	pr.payments = append(pr.payments, &payment.Payment{
 		AccountId:   fromAccount.Id,
 		ToAccountId: toAccount.Id,
-		Amount:      paymentReq.Amount,
+		Amount:      amount,
 		Direction:   payment.OutgoingDirection,
 	})
 	pr.payments = append(pr.payments, &payment.Payment{
 		AccountId:     toAccount.Id,
 		FromAccountId: fromAccount.Id,
-		Amount:        paymentReq.Amount,
+		Amount:        amount,
 		Direction:     payment.IncomingDirection,
 	})
-	fromAccount.Balance -= paymentReq.Amount
-	toAccount.Balance += paymentReq.Amount
+	fromAccount.Balance -= amount
+	toAccount.Balance += amount
 	return nil
 }

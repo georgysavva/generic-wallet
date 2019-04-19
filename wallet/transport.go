@@ -81,12 +81,14 @@ func decodeSendPaymentRequest(_ context.Context, r *http.Request) (interface{}, 
 func decodePaginationRequest(r *http.Request) (*paginationRequest, error) {
 	var offset, limit int
 	offsetText := r.FormValue("offset")
+	decodedReq := &paginationRequest{}
 	if offsetText != "" {
 		var err error
 		offset, err = strconv.Atoi(offsetText)
 		if err != nil {
 			return nil, &decodingError{"'offset' must be an int"}
 		}
+		decodedReq.Offset = &offset
 	}
 	limitText := r.FormValue("limit")
 	if limitText != "" {
@@ -95,8 +97,9 @@ func decodePaginationRequest(r *http.Request) (*paginationRequest, error) {
 		if err != nil {
 			return nil, &decodingError{"'limit' must be an int"}
 		}
+		decodedReq.Limit = &limit
 	}
-	return &paginationRequest{Offset: offset, Limit: limit}, nil
+	return decodedReq, nil
 }
 
 func decodeGetAllPaymentsRequest(_ context.Context, r *http.Request) (interface{}, error) {

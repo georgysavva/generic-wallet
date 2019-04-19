@@ -36,17 +36,18 @@ func main() {
 		panic(err)
 	}
 
-	walletService := wallet.NewService(paymentsRepository, accountsRepository)
-	mux := http.NewServeMux()
 	var logger log.Logger
 	logger = log.NewLogfmtLogger(log.NewSyncWriter(os.Stderr))
 	logger = log.With(logger, "ts", log.DefaultTimestampUTC)
+	ws := wallet.NewService(paymentsRepository, accountsRepository)
+	ws = wallet.NewLoggingService(log.With(logger, "component", "wallet"), ws)
+	mux := http.NewServeMux()
 	httpLogger := log.With(logger, "component", "http")
-	mux.Handle("/wallet/v1/", wallet.MakeHandler(walletService, httpLogger))
+	mux.Handle("/wallet/v1/", wallet.MakeHandler(ws, httpLogger))
 
 	httpAddr := fmt.Sprintf(":%d", conf.Port)
 	server := &http.Server{Addr: httpAddr, Handler: mux}
-	logger.Log("transport", "http", "address", httpAddr, "msg", "listening")
+	logger.Log("msg", "Start listening", "transport", "http", "address", httpAddr)
 	go func() {
 		if err := server.ListenAndServe(); err != http.ErrServerClosed {
 			panic(err)
@@ -54,7 +55,7 @@ func main() {
 	}()
 
 	signalCode := waitingForShutdown()
-	logger.Log("Received shutdown signal", "code", signalCode)
+	logger.Log("msg", "Received shutdown signal", "code", signalCode)
 
 	ctx, cancel := context.WithTimeout(context.Background(), time.Millisecond*time.Duration(conf.ShutDownTimeout))
 	defer cancel()

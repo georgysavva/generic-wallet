@@ -29,8 +29,8 @@ func makeSendPaymentEndpoint(s Service) endpoint.Endpoint {
 }
 
 type paginationRequest struct {
-	Offset int
-	Limit  int
+	Offset *int
+	Limit  *int
 }
 
 type getAllPaymentsRequest struct {

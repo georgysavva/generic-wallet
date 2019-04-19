@@ -18,16 +18,10 @@ type Payment struct {
 	Direction     string  `json:"direction"`
 }
 
-type PaymentRequest struct {
-	FromAccountId string
-	ToAccountId   string
-	Amount        float64
-}
-
 var LowBalanceErr = errors.New("account doesn't have enough money to send the payment")
 
 type Repository interface {
-	GetAll(ctx context.Context, offset, limit int) ([]*Payment, error)
+	GetAll(ctx context.Context, offset, limit *int) ([]*Payment, error)
 	CountAll(ctx context.Context) (int, error)
-	Save(ctx context.Context, payment *PaymentRequest) error
+	Save(ctx context.Context, fromAccountId, toAccountId string, amount float64) error
 }

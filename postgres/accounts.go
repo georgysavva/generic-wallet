@@ -19,7 +19,7 @@ func NewAccountsRepository(settings *config.Postgres) (*AccountsRepository, erro
 	return &AccountsRepository{db: db}, nil
 }
 
-func (ar *AccountsRepository) GetAll(ctx context.Context, offset, limit int) ([]*account.Account, error) {
+func (ar *AccountsRepository) GetAll(ctx context.Context, offset, limit *int) ([]*account.Account, error) {
 	var records []*account.Account
 	_, err := ar.db.QueryContext(ctx,
 		&records, "select id,balance,currency from accounts order by id offset ?0 limit ?1",

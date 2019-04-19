@@ -17,3 +17,10 @@ CREATE TABLE public.payments
     CONSTRAINT payments_accounts_id_fk_2 FOREIGN KEY (to_account_id) REFERENCES public.accounts (id) ON DELETE CASCADE,
     CONSTRAINT payments_accounts_id_fk_3 FOREIGN KEY (from_account_id) REFERENCES public.accounts (id) ON DELETE CASCADE
 );
+
+INSERT INTO accounts
+VALUES ('alice', 100.0, 'USD'),
+       ('bob', 100.0, 'USD'),
+       ('mark', 100.0, 'USD'),
+       ('john', 100.0, 'USD'),
+       ('kate_in_europe', 100.0, 'EUR');

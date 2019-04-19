@@ -11,7 +11,7 @@ type Account struct {
 }
 
 type Repository interface {
-	GetAll(ctx context.Context, offset, limit int) ([]*Account, error)
+	GetAll(ctx context.Context, offset, limit *int) ([]*Account, error)
 	CountAll(ctx context.Context) (int, error)
 	Get(ctx context.Context, accountId string) (*Account, error)
 }

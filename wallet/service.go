@@ -14,8 +14,8 @@ const (
 
 type Service interface {
 	SendPayment(ctx context.Context, fromAccountId, toAccountId string, amount float64) error
-	GetAllPayments(ctx context.Context, offset, limit int) ([]*payment.Payment, int, error)
-	GetAllAccounts(ctx context.Context, offset, limit int) ([]*account.Account, int, error)
+	GetAllPayments(ctx context.Context, offset, limit *int) ([]*payment.Payment, int, error)
+	GetAllAccounts(ctx context.Context, offset, limit *int) ([]*account.Account, int, error)
 }
 
 type service struct {
@@ -23,7 +23,7 @@ type service struct {
 	accounts account.Repository
 }
 
-func NewService(payments payment.Repository, accounts account.Repository) *service {
+func NewService(payments payment.Repository, accounts account.Repository) Service {
 	return &service{payments: payments, accounts: accounts}
 }
 
@@ -53,12 +53,11 @@ func (s *service) SendPayment(ctx context.Context, fromAccountId, toAccountId st
 	if fromAccount.Currency != toAccount.Currency {
 		return &DifferentCurrenciesError{fromAccount.Currency, toAccount.Currency}
 	}
-	newPayment := &payment.PaymentRequest{fromAccountId, toAccountId, amount}
-	err = s.payments.Save(ctx, newPayment)
+	err = s.payments.Save(ctx, fromAccountId, toAccountId, amount)
 	return err
 }
 
-func (s *service) GetAllPayments(ctx context.Context, offset, limit int) ([]*payment.Payment, int, error) {
+func (s *service) GetAllPayments(ctx context.Context, offset, limit *int) ([]*payment.Payment, int, error) {
 	offset, limit, err := preparePagination(offset, limit)
 	if err != nil {
 		return nil, 0, err
@@ -74,7 +73,7 @@ func (s *service) GetAllPayments(ctx context.Context, offset, limit int) ([]*pay
 	return paymentRecords, paymentsTotal, nil
 }
 
-func (s *service) GetAllAccounts(ctx context.Context, offset, limit int) ([]*account.Account, int, error) {
+func (s *service) GetAllAccounts(ctx context.Context, offset, limit *int) ([]*account.Account, int, error) {
 	offset, limit, err := preparePagination(offset, limit)
 	if err != nil {
 		return nil, 0, err
@@ -89,12 +88,17 @@ func (s *service) GetAllAccounts(ctx context.Context, offset, limit int) ([]*acc
 	}
 	return accountRecords, accountsTotal, nil
 }
-func preparePagination(offset, limit int) (int, int, error) {
-	if offset < 0 || limit < 0 {
-		return 0, 0, &IncorrectInputData{"'offset' and 'limit' pagination parameters must be >= 0"}
+func preparePagination(offset, limit *int) (*int, *int, error) {
+	if offset != nil && *offset < 0 {
+		return nil, nil, &IncorrectInputData{"'offset'pagination parameter must be >= 0"}
 	}
-	if limit == 0 {
-		limit = defaultPaginationLimit
+	if limit != nil {
+		if *limit < 0 {
+			return nil, nil, &IncorrectInputData{"'limit'pagination parameter must be >= 0"}
+		}
+	} else {
+		limit = new(int)
+		*limit = defaultPaginationLimit
 	}
 	return offset, limit, nil
 }

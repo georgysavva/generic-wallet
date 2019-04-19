@@ -17,15 +17,14 @@ func instantiateServiceForTests() *service {
 		{Id: "john", Balance: 100.0, Currency: "USD"},
 		{Id: "kate_in_europe", Balance: 100.0, Currency: "EUR"},
 	}
-	accountsRepo, PaymentsRepo := inmem_repository.InstantiateRepositories(accounts, nil)
-	return NewService(PaymentsRepo, accountsRepo)
+	accountsRepo, paymentsRepo := inmem_repository.InstantiateRepositories(accounts, nil)
+	return &service{payments: paymentsRepo, accounts: accountsRepo}
 }
 
 func TestSendPayment_Single(t *testing.T) {
 	s := instantiateServiceForTests()
 	ctx := context.Background()
 	var err error
-	offset, limit := 0, 0
 
 	err = s.SendPayment(ctx, "alice", "bob", 20.0)
 	assert.Equal(t, err, nil)
@@ -33,7 +32,7 @@ func TestSendPayment_Single(t *testing.T) {
 	toAccount, _ := s.accounts.Get(ctx, "bob")
 	assert.Equal(t, fromAccount.Balance, 80.0)
 	assert.Equal(t, toAccount.Balance, 120.0)
-	paymentsList, totalPayments, _ := s.GetAllPayments(ctx, offset, limit)
+	paymentsList, totalPayments, _ := s.GetAllPayments(ctx, nil, nil)
 	expectedPayments := []*payment.Payment{
 		{AccountId: "alice", ToAccountId: "bob", Amount: 20.0, Direction: payment.OutgoingDirection},
 		{AccountId: "bob", FromAccountId: "alice", Amount: 20.0, Direction: payment.IncomingDirection},
@@ -46,7 +45,6 @@ func TestSendPayment_Bunch(t *testing.T) {
 	s := instantiateServiceForTests()
 	ctx := context.Background()
 	var err error
-	offset, limit := 0, 0
 
 	err = s.SendPayment(ctx, "alice", "bob", 20.0)
 	assert.Equal(t, err, nil)
@@ -62,7 +60,7 @@ func TestSendPayment_Bunch(t *testing.T) {
 	assert.Equal(t, bobAccount.Balance, 160.0)
 	assert.Equal(t, johnAccount.Balance, 130.0)
 	assert.Equal(t, markAccount.Balance, 60.0)
-	paymentsList, totalPayments, _ := s.GetAllPayments(ctx, offset, limit)
+	paymentsList, totalPayments, _ := s.GetAllPayments(ctx, nil, nil)
 	expectedPayments := []*payment.Payment{
 		{AccountId: "alice", ToAccountId: "bob", Amount: 20.0, Direction: payment.OutgoingDirection},
 		{AccountId: "bob", FromAccountId: "alice", Amount: 20.0, Direction: payment.IncomingDirection},
@@ -79,13 +77,12 @@ func TestSendPayment_AccountDoesNotExist(t *testing.T) {
 	s := instantiateServiceForTests()
 	ctx := context.Background()
 	var err error
-	offset, limit := 0, 0
 
 	err = s.SendPayment(ctx, "unknown_from_account", "bob", 20.0)
 	assert.Equal(t, err, FromAccountNotFound)
 	toAccount, _ := s.accounts.Get(ctx, "bob")
 	assert.Equal(t, toAccount.Balance, 100.0)
-	paymentsList, totalPayments, _ := s.GetAllPayments(ctx, offset, limit)
+	paymentsList, totalPayments, _ := s.GetAllPayments(ctx, nil, nil)
 	assert.Equal(t, 0, len(paymentsList))
 	assert.Equal(t, 0, totalPayments)
 
@@ -93,7 +90,7 @@ func TestSendPayment_AccountDoesNotExist(t *testing.T) {
 	assert.Equal(t, err, ToAccountNotFound)
 	fromAccount, _ := s.accounts.Get(ctx, "alice")
 	assert.Equal(t, fromAccount.Balance, 100.0)
-	paymentsList, totalPayments, _ = s.GetAllPayments(ctx, offset, limit)
+	paymentsList, totalPayments, _ = s.GetAllPayments(ctx, nil, nil)
 	assert.Equal(t, 0, len(paymentsList))
 	assert.Equal(t, 0, totalPayments)
 }
@@ -102,7 +99,6 @@ func TestSendPayment_DifferentCurrencies(t *testing.T) {
 	s := instantiateServiceForTests()
 	ctx := context.Background()
 	var err error
-	offset, limit := 0, 0
 
 	err = s.SendPayment(ctx, "alice", "kate_in_europe", 20.0)
 	_, ok := err.(*DifferentCurrenciesError)
@@ -111,7 +107,7 @@ func TestSendPayment_DifferentCurrencies(t *testing.T) {
 	toAccount, _ := s.accounts.Get(ctx, "kate_in_europe")
 	assert.Equal(t, fromAccount.Balance, 100.0)
 	assert.Equal(t, toAccount.Balance, 100.0)
-	paymentsList, totalPayments, _ := s.GetAllPayments(ctx, offset, limit)
+	paymentsList, totalPayments, _ := s.GetAllPayments(ctx, nil, nil)
 	assert.Equal(t, 0, len(paymentsList))
 	assert.Equal(t, 0, totalPayments)
 }
@@ -120,7 +116,6 @@ func TestSendPayment_LowBalance(t *testing.T) {
 	s := instantiateServiceForTests()
 	ctx := context.Background()
 	var err error
-	offset, limit := 0, 0
 
 	err = s.SendPayment(ctx, "alice", "bob", 200.0)
 	assert.Equal(t, err, payment.LowBalanceErr)
@@ -128,7 +123,7 @@ func TestSendPayment_LowBalance(t *testing.T) {
 	toAccount, _ := s.accounts.Get(ctx, "bob")
 	assert.Equal(t, fromAccount.Balance, 100.0)
 	assert.Equal(t, toAccount.Balance, 100.0)
-	paymentsList, totalPayments, _ := s.GetAllPayments(ctx, offset, limit)
+	paymentsList, totalPayments, _ := s.GetAllPayments(ctx, nil, nil)
 	assert.Equal(t, 0, len(paymentsList))
 	assert.Equal(t, 0, totalPayments)
 }
