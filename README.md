@@ -14,6 +14,6 @@ This is a generic wallet service. It provides following features:
 # Install and run  
 1. Download the repo: `git clone https://github.com/gazoon/generic_wallet.git`  
 2. Create config.json file in the project root, use config_exemple.json file as an example  
-3. Prepare postgres database and run `postgres/db_schema.sql` script to create db schema and add initial accounts.  
-4. (Optional) Run tes  
+3. Prepare postgres database and run `postgres/db_schema.sql` script to create db schema and add initial accounts  
+4. (Optional) Run test `go test generic_wallet/wallet`    
 5. Run the server `go run main.go`  
