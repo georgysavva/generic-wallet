@@ -5,12 +5,12 @@ This is a generic wallet service. It provides following features:
 - See all accounts.  
 # Implementation details  
 - It's a domain driven microservice written in golang with [go-kit](https://github.com/go-kit/kit) library.  
-- Service functional available as a RESTful API. See [API docs](https://documenter.getpostman.com/view/865221/S1ETRGPW):  
+- Service functional available as a RESTful API. See [API docs](https://documenter.getpostman.com/view/865221/S1ETRGPW).  
 - Authentication not supported for simplicity sake.  
 - Service can be easily auto-scaled, since it's stateless.  
 - Postgres is used as persistence layer.  
 - Core business logic covered with tests.
-- It uses [dep](https://github.com/golang/dep) as dependency management tool
+- It uses [dep](https://github.com/golang/dep) as dependency management tool.
 # Install and run  
 1. Download the repo: `git clone https://github.com/gazoon/generic_wallet.git`  
 2. Create config.json file in the project root, use config_exemple.json file as an example  
