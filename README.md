@@ -5,7 +5,7 @@ This is a generic wallet service. It provides following features:
 - See all accounts.  
 # Implementation details  
 - It's a domain driven microservice written in golang with [go-kit](https://github.com/go-kit/kit) library.  
-- Service functional available as a RESTful API. See API documentation:  
+- Service functional available as a RESTful API. See [API docs](https://documenter.getpostman.com/view/865221/S1ETRGPW):  
 - Authentication not supported for simplicity sake.  
 - Service can be easily auto-scaled, since it's stateless.  
 - Postgres is used as persistence layer.  
