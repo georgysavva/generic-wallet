@@ -1,6 +1,6 @@
 {
   "port": 8080,
-  "shutdown_timeout": 3000,
+  "shutdown_timeout": 10000,
   "postgres": {
     "host": "localhost",
     "port": 5432,
