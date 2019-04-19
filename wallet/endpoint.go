@@ -38,8 +38,8 @@ type getAllPaymentsRequest struct {
 }
 
 type getAllPaymentsResponse struct {
-	Results []*payment.Payment `json:"results"`
-	Total   int                `json:"total"`
+	Results     []*payment.Payment `json:"results"`
+	TotalNumber int                `json:"total_number"`
 }
 
 func makeGetAllPaymentsEndpoint(s Service) endpoint.Endpoint {
@@ -52,7 +52,7 @@ func makeGetAllPaymentsEndpoint(s Service) endpoint.Endpoint {
 		if payments == nil {
 			payments = []*payment.Payment{}
 		}
-		return &getAllPaymentsResponse{Results: payments, Total: totalNumber}, nil
+		return &getAllPaymentsResponse{Results: payments, TotalNumber: totalNumber}, nil
 	}
 }
 
@@ -61,8 +61,8 @@ type getAllAccountsRequest struct {
 }
 
 type getAllAccountsResponse struct {
-	Results []*account.Account `json:"results"`
-	Total   int                `json:"total"`
+	Results     []*account.Account `json:"results"`
+	TotalNumber int                `json:"total_number"`
 }
 
 func makeGetAllAccountsEndpoint(s Service) endpoint.Endpoint {
@@ -75,6 +75,6 @@ func makeGetAllAccountsEndpoint(s Service) endpoint.Endpoint {
 		if accounts == nil {
 			accounts = []*account.Account{}
 		}
-		return &getAllAccountsResponse{Results: accounts, Total: totalNumber}, nil
+		return &getAllAccountsResponse{Results: accounts, TotalNumber: totalNumber}, nil
 	}
 }
