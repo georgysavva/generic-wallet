@@ -1,5 +1,5 @@
 # Project description  
-This is a generic wallet service. It designed to be used as a core service in a hypothetical fintech startup. Wallet provides following features:
+This is a generic wallet service. It's designed to be used as a core service in a hypothetical fintech startup. Wallet provides following features:
 - Send payment from one account to another.  
 - See all payments.  
 - See all accounts.  
