@@ -2,8 +2,8 @@ package inmem_repository
 
 import (
 	"context"
-	"generic_wallet/account"
-	"generic_wallet/payment"
+	"github.com/georgysavva/generic_wallet/account"
+	"github.com/georgysavva/generic_wallet/payment"
 	"github.com/pkg/errors"
 	"sort"
 )

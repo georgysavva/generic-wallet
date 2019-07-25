@@ -2,9 +2,9 @@ package wallet
 
 import (
 	"context"
-	"generic_wallet/account"
-	"generic_wallet/inmem_repository"
-	"generic_wallet/payment"
+	"github.com/georgysavva/generic_wallet/account"
+	"github.com/georgysavva/generic_wallet/inmem_repository"
+	"github.com/georgysavva/generic_wallet/payment"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
