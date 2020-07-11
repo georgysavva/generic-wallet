@@ -3,7 +3,7 @@ package wallet
 import (
 	"context"
 	"encoding/json"
-	"github.com/georgysavva/generic_wallet/payment"
+	"github.com/georgysavva/generic-wallet/payment"
 	kitlog "github.com/go-kit/kit/log"
 	kithttp "github.com/go-kit/kit/transport/http"
 	"github.com/gorilla/mux"

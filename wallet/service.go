@@ -3,8 +3,8 @@ package wallet
 import (
 	"context"
 	"fmt"
-	"github.com/georgysavva/generic_wallet/account"
-	"github.com/georgysavva/generic_wallet/payment"
+	"github.com/georgysavva/generic-wallet/account"
+	"github.com/georgysavva/generic-wallet/payment"
 	"github.com/pkg/errors"
 )
 

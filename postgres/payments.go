@@ -2,8 +2,8 @@ package postgres
 
 import (
 	"context"
-	"github.com/georgysavva/generic_wallet/config"
-	"github.com/georgysavva/generic_wallet/payment"
+	"github.com/georgysavva/generic-wallet/config"
+	"github.com/georgysavva/generic-wallet/payment"
 	"github.com/go-pg/pg"
 )
 
