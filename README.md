@@ -12,8 +12,8 @@ This is a generic wallet service. It's designed to be used as a core service in 
 - Core business logic covered with tests.
 - It uses [dep](https://github.com/golang/dep) as dependency management tool.
 # Install and run  
-1. Download the repo: `git clone https://github.com/gazoon/generic_wallet.git`  
+1. Download the repo: `git clone https://github.com/gazoon/generic-wallet.git`  
 2. Create config.json file in the project root, use config_exemple.json file as an example  
 3. Prepare postgres database and run `postgres/db_schema.sql` script to create db schema and add initial accounts  
-4. (Optional) Run test `go test generic_wallet/wallet`    
+4. (Optional) Run test `go test ./...`    
 5. Run the server `go run main.go`  
